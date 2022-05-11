@@ -1,0 +1,70 @@
+//
+//  BrandLink.swift
+//  Primer
+//
+//  Created by James Hall on 7/20/20.
+//  Copyright © 2020 Primer Inc. All rights reserved.
+//
+
+import SwiftUI
+import PrimerEngine
+
+
+struct BrandLink: View {
+    @Environment(\.analytics) var analytics
+    @State private var isActive: Bool
+    
+    var brand: BrandModel
+    var client: APIClient
+    var appState: Binding<AppState>
+    let logoSize: CGFloat = 86
+    var containerWidth: CGFloat
+    
+    private let isDeviceIpad: Bool = (UIDevice.current.userInterfaceIdiom == .pad)
+    
+    init(brand: BrandModel, selectedBrandId: Int, client: APIClient, appState:Binding<AppState>, containerWidth: CGFloat = 0) {
+        self.brand = brand
+        self.client = client
+        self.appState = appState
+        self.containerWidth = containerWidth
+        _isActive = State(initialValue:(self.brand.id == selectedBrandId))
+    }
+    
+    // MARK: - Body
+    
+    var body: some View {
+        ZStack {
+<<<<<<< HEAD
+            NavigationLink(destination: BrandView(brand: brand, appState: appState, client: client, containerWidth: containerWidth), isActive: $isActive) { EmptyView() }
+=======
+            NavigationLink(destination:
+                            BrandView(brand: brand, appState: appState, client: self.client, onSelectProduct: onSelectProduct, containerWidth: containerWidth),
+                           isActive: $isActive){ EmptyView() }
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+            
+            Color.gray
+            
+            RemoteImageView(url: self.brand.splash, width: isDeviceIpad ? 240 : 220) { image in
+                image.resizable()
+                    .aspectRatio(contentMode: .fill)
+            }
+        }
+        .frame(width: isDeviceIpad ? 240 : 220, height: isDeviceIpad ? 240 : 200, alignment: .leading)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .shadow(color: SwiftUI.Color.black.opacity(0.3), radius: 6.0, x: 0.0, y: 0.0)
+        .overlay(self.brandLogo)
+        .onTapGesture {
+                self.analytics?.didSelectBrandInLibrary(brand:self.brand)
+                self.isActive = true
+        }
+    }
+    
+    var brandLogo: some View {
+        RemoteImageView(url: brand.logo, width: logoSize) { image in
+            image.resizable()
+                .aspectRatio(contentMode: .fit)
+        }
+        .clipShape(Circle())
+        .frame(width: logoSize, height: logoSize)
+    }
+}

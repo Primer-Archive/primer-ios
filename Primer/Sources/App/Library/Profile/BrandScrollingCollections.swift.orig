@@ -1,0 +1,281 @@
+
+import SwiftUI
+import PrimerEngine
+import Combine
+
+// MARK: Brand Scrolling Collection
+
+struct BrandScrollingCollections: View {
+    @Environment(\.analytics) var analytics
+    @ObservedObject var collectionsRepo: ProductCollectionsRepository
+    var appState: Binding<AppState>
+    var brand: BrandModel
+    var client: APIClient
+    var containerWidth: CGFloat
+    
+<<<<<<< HEAD
+=======
+    @Environment(\.analytics) var analytics
+    
+    @StateObject var collectionsRepo = ProductCollectionsRepository()
+    
+    
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+    init(brand: BrandModel,
+         client: APIClient, appState: Binding<AppState>,
+         containerWidth: CGFloat){
+        
+        self.brand = brand
+        self.appState = appState
+        self.client = client
+        self.containerWidth = containerWidth
+        _collectionsRepo = StateObject(wrappedValue: ProductCollectionsRepository(brandID: brand.id))
+        
+    }
+    
+    var body: some View {
+<<<<<<< HEAD
+        ForEach(self.collectionsRepo.value, id: \.id) { collection in
+            ProductCollectionScroller(brand: brand,collection: collection, appState: appState, containerWidth: containerWidth).analytics(analytics)
+=======
+        ZStack {
+            BackgroundView().edgesIgnoringSafeArea(.all)
+            if self.collectionsRepo.value.count == 0 {
+                ActivityIndicatorView()
+            }else{
+                ForEach(self.collectionsRepo.value, id: \.id) { collection in
+                    ProductCollectionScroller(brand: brand,collection: collection,appState:appState,containerWidth: containerWidth, onSelectProduct: onSelectProduct).analytics(analytics)
+                }
+            }
+        }
+        .onAppear(){
+            self.collectionsRepo.setBrandId(brandID: brand.id)
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+        }
+    }
+}
+
+// MARK: - Product Collection Scroller
+
+fileprivate struct ProductCollectionScroller: View {
+<<<<<<< HEAD
+    @Environment(\.analytics) var analytics
+    @ObservedObject var collectionRepo: ProductCollectionRepository
+=======
+    var brand: BrandModel
+    var collection: ProductCollectionModel
+    @StateObject var collectionRepo = ProductCollectionRepository()
+    @State private var seeAll = false
+    var appState: Binding<AppState>
+    var containerWidth: CGFloat
+    var onSelectProduct: ([ProductModel], Int, Int) -> Void
+    
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+    @State private var cancellable: AnyCancellable? = nil
+    @State private var seeAll = false
+    @Binding var appState: AppState
+    
+<<<<<<< HEAD
+    var brand: BrandModel
+    var collection: ProductCollectionModel
+    var containerWidth: CGFloat
+
+    init(brand: BrandModel, collection: ProductCollectionModel, appState: Binding<AppState>, containerWidth: CGFloat) {
+=======
+    @Environment(\.analytics) var analytics
+    
+    init(brand: BrandModel, collection: ProductCollectionModel, appState: Binding<AppState>, containerWidth: CGFloat, onSelectProduct:  @escaping ([ProductModel], Int, Int) -> Void) {
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+        self.brand = brand
+        self.collection = collection
+        self._appState = appState
+        self.containerWidth = containerWidth
+<<<<<<< HEAD
+        self.collectionRepo = ProductCollectionRepository(productCollectionID: collection.id)
+=======
+        self.onSelectProduct = onSelectProduct
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+    }
+    
+    // MARK: - Body
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                LabelView(text: collection.name, style: .bodyMediumGray)
+                Spacer()
+<<<<<<< HEAD
+
+                NavigationLink(destination: ProductGridView(productsRepo: collectionRepo, appState: $appState, containerWidth: containerWidth, onTap: { index, variationIndex in
+
+                    self.select(id: index, variation: variationIndex)
+//                    self.onSelectProduct(self.collectionRepo.value, index, variationIndex)
+                        
+                    }).analytics(analytics).onAppear {
+                        print("analytics didViewAllForCollection(brand: \(self.brand.name))")
+                        self.analytics?.didViewAllForCollection(brand: self.brand, collection: collection)
+                    }.navigationBarTitle(collection.name))
+=======
+                
+                NavigationLink(destination: ProductGridView(productsRepo: collectionRepo, appState: appState, containerWidth: containerWidth, onTap: { index, variationIndex in
+                    
+                    self.onSelectProduct(self.collectionRepo.value, index, variationIndex)
+                    
+                }).analytics(analytics).onAppear {
+                    print("analytics didViewAllForCollection(brand: \(self.brand.name))")
+                    self.analytics?.didViewAllForCollection(brand: self.brand, collection: collection)
+                }.navigationBarTitle(collection.name))
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+                {
+                    LabelView(text: "See All", style: .buttonMedium)
+                }
+            }.padding(.horizontal, 20)
+            
+            // MARK: - Scrolling Tiles
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack (spacing: BrandPadding.Medium.pixelWidth) {
+                    ForEach(collectionRepo.value, id: \.id) { product in
+                        Group {
+                            
+                            // Standard product
+                            if product.productType == .product {
+<<<<<<< HEAD
+                                let isFavorite = self.$appState.wrappedValue.favoriteProductIDs.contains(product.id)
+
+=======
+                                let isFavorite = self.appState.wrappedValue.favoriteProductIDs.contains(product.id)
+                                
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+                                VStack(spacing: 4.0) {
+                                    ProductSwatchView(product: product)
+                                        .frame(width: 120, height: 120, alignment: .center)
+                                        .overlay(FavoriteBadge(showing: isFavorite), alignment: .topTrailing)
+                                        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                                    
+                                    LabelView(text: product.name, style: .subviewCardTitle)
+                                        .opacity(0.6)
+                                        .truncationMode(.tail)
+                                }.frame(maxWidth: 120)
+                                .onTapGesture(count: 2) {
+                                    withAnimation{
+                                        handleFavorite(product: product, isFavorite: isFavorite)
+                                    }
+                                }
+                                .onTapGesture {
+                                    self.analytics?.didViewForCollection(brand: self.brand, collection:collection, product: product)
+                                    self.select(id: product.parentId ?? product.id, variation: 0)
+//                                    self.onSelectProduct(collectionRepo.value, product.parentId ?? product.id, 0)
+                                }.onAppear {
+                                    let location = collectionRepo.value.firstIndex(of: product) ?? -1
+                                    if location > 0 && collectionRepo.value.count - location <= 5 {
+                                        print("call append after \(product.name)")
+                                        collectionRepo.append()
+                                    }
+                                }
+                            } else {
+                                
+                                // Product variation
+                                ForEach(product.variations!.indices, id:\.self) { idx in
+                                    let isFavorite = self.$appState.wrappedValue.favoriteProductIDs.contains(product.variations![idx].id)
+                                    let variationProduct = product.variations![idx]
+                                    
+                                    VStack(spacing: 4.0) {
+                                        ProductSwatchView(product: variationProduct)
+                                            .frame(width: 120, height: 120, alignment: .center)
+                                            .overlay(FavoriteBadge(showing: isFavorite), alignment: .topTrailing)
+                                            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                                        
+                                        LabelView(text: product.name, style: .subviewCardTitle)
+                                            .opacity(0.6)
+                                            .truncationMode(.tail)
+                                    }
+                                    .onTapGesture(count: 2){
+                                        withAnimation{
+                                            handleFavorite(product: product, isFavorite: isFavorite)
+                                        }
+                                    }
+                                    .onTapGesture {
+                                        self.analytics?.didViewForCollection(brand: self.brand, collection:collection, product: variationProduct)
+                                        self.select(id: product.parentId ?? product.id, variation: idx)
+                                    }.onAppear {
+                                        let location = collectionRepo.value.firstIndex(of: product) ?? -1
+                                        if location > 0 && collectionRepo.value.count - location <= 5 {
+                                            print("call append after \(product.name)")
+                                            collectionRepo.append()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(BrandPadding.Smedium.pixelWidth)
+            }
+            .frame(maxWidth: .infinity)
+        }.padding(.vertical, BrandPadding.Tiny.pixelWidth)
+        .onAppear{
+            self.collectionRepo.setCollectionId(collectionId: collection.id)
+        }
+    }
+<<<<<<< HEAD
+
+    // MARK: - Select Tile
+    func select(id: Int, variation: Int) {
+        appState.productCollection = collectionRepo
+        let productIndex = collectionRepo.value.firstIndex(where: { $0.id == id }) ?? 0
+        appState.selectedVariationIndex = Double(variation)
+        appState.currentIndex = Double(productIndex) + 1 // "View More" orb at the beginning requires offset of 1
+        appState.visibleSheet = nil
+    }
+=======
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+    
+    // MARK: - Favoriting
+    
+    private func handleFavorite(product: ProductModel, isFavorite: Bool) {
+        if isFavorite {
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            self.analytics?.didRemoveBrandViewFavorite(product: product)
+            if AuthController.shared.isLoggedIn, let client = AuthController.shared.apiClient {
+                self.cancellable = client.removeFavoriteProduct(product.id)
+                    .receive(on: DispatchQueue.main)
+                    .sink(
+                        receiveCompletion: { completion in
+                            switch completion {
+                                case .finished:
+                                    $appState.favoriteProductIDs.wrappedValue.removeAll(where: { $0 == product.id })
+                                    break
+                                case .failure(let error):
+                                    print(error.localizedDescription)
+                            }
+                        },
+                        receiveValue: { _ in })
+            }
+        } else {
+            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            self.analytics?.didAddBrandViewFavorite(product: product)
+            if AuthController.shared.isLoggedIn, let client = AuthController.shared.apiClient {
+                self.cancellable = client.addFavoriteProduct(product.id)
+                    .receive(on: DispatchQueue.main)
+                    .sink(
+                        receiveCompletion: { completion in
+                            switch completion {
+                                case .finished:
+                                    $appState.favoriteProductIDs.wrappedValue.append(product.id)
+                                    break
+                                case .failure(let error):
+                                    print(error.localizedDescription)
+                            }
+                        },
+                        receiveValue: { _ in })
+            }
+        }
+    }
+}
+
+extension ProductCollectionModel {
+    fileprivate var products: [ProductModel] {
+        []
+    }
+}

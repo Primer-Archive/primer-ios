@@ -1,0 +1,20 @@
+#pragma arguments
+float revealPercent;
+float3 tilingInfo;
+float3 swatchDimensions;
+
+#pragma transparent
+
+#pragma body
+
+const float2 swatchScale = swatchDimensions.xy / tilingInfo.xy;
+const bool isCentered = tilingInfo.z < 0.5;
+float2 uv = _surface.diffuseTexcoord;
+if (!isCentered) {
+    uv -= (swatchScale * 0.5);
+}
+uv /= swatchScale;
+
+if (revealPercent < 1 && length(uv) > revealPercent) {
+    _surface.diffuse.a = 0;
+}

@@ -1,0 +1,68 @@
+//
+//  CategoryLink.swift
+//  Primer
+//
+//  Created by James Hall on 7/20/20.
+//  Copyright © 2020 Primer Inc. All rights reserved.
+//
+
+import SwiftUI
+import PrimerEngine
+
+
+struct CategoryLink: View {
+    @Environment(\.analytics) var analytics
+    @State private var isActive: Bool = false
+    var appState: Binding<AppState>
+    
+    var category: CategoryModel
+    var client: APIClient
+    var isDeviceIpad: Bool = (UIDevice.current.userInterfaceIdiom == .pad)
+    var containerWidth: CGFloat
+    
+    init(category: CategoryModel, client: APIClient, appState: Binding<AppState>, containerWidth: CGFloat) {
+        self.category = category
+        self.client = client
+        self.containerWidth = containerWidth
+        self.appState = appState
+    }
+    
+    // MARK: - Body
+    
+    var body: some View {
+        ZStack {
+<<<<<<< HEAD
+            NavigationLink(destination: SeeAllCategoryProductsView(appState: appState, client: self.client,category:category,
+                containerWidth: containerWidth).analytics(self.analytics).navigationBarTitle(category.name), isActive: $isActive) { EmptyView() }
+=======
+            NavigationLink(destination:
+                            SeeAllCategoryProductsView(appState: appState, client: self.client,category:category, onSelectProduct: self.onSelectProduct, containerWidth: containerWidth).analytics(self.analytics).navigationBarTitle(category.name),
+                           isActive: $isActive) { EmptyView() }
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+            
+            RemoteImageView(url: self.category.images[0], width: isDeviceIpad ? 260 : 140) { image in
+                image.resizable()
+                    .aspectRatio(contentMode: .fill)
+            }
+        }
+        .frame(width: isDeviceIpad ? 260 : 140, height: isDeviceIpad ? 240 : 110)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .shadow(color: SwiftUI.Color.black.opacity(0.3), radius: 6.0, x: 0.0, y: 0.0)
+        .overlay(self.categoryText)
+        .onTapGesture {
+            self.analytics?.didSelectCategoryInLibrary(category:self.category)
+            self.isActive = true
+        }
+    }
+
+    var categoryText: some View {
+        VStack{
+            Text(self.category.name)
+                .font(.system(size: 16, weight: .medium, design: .rounded))
+                .foregroundColor(BrandColors.white.color)
+        }
+        .shadow(radius: 24)
+        .cornerRadius(isDeviceIpad ? 80 : 48)
+        .padding(isDeviceIpad ? 80 : 12)
+    }
+}

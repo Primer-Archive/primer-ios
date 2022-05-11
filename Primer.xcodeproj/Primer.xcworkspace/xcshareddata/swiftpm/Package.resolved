@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Advance",
+        "repositoryURL": "https://github.com/timdonnelly/Advance.git",
+        "state": {
+          "branch": null,
+          "revision": "0654131d602c85c58a4c89b2f95ad1ef2894f8fd",
+          "version": "3.1.1"
+        }
+      },
+      {
+        "package": "DisplayLink",
+        "repositoryURL": "https://github.com/timdonnelly/DisplayLink.git",
+        "state": {
+          "branch": null,
+          "revision": "ba588b4d4428baab3270c1fdffdfc4f27ef7b94b",
+          "version": "0.1.0"
+        }
+      },
+      {
+        "package": "Grid",
+        "repositoryURL": "git@github.com:SwiftUIExtensions/Grid.git",
+        "state": {
+          "branch": null,
+          "revision": "15800a8b6a6dd5eb655315cf2ce26291903b894a",
+          "version": "0.7.2"
+        }
+      },
+      {
+        "package": "MapleBacon",
+        "repositoryURL": "git@github.com:JanGorman/MapleBacon.git",
+        "state": {
+          "branch": null,
+          "revision": "c1822d37fbe8d1ca34a597e5ec1a61496d9e35d1",
+          "version": "5.6.10"
+        }
+      },
+      {
+        "package": "Valet",
+        "repositoryURL": "git@github.com:square/Valet.git",
+        "state": {
+          "branch": null,
+          "revision": "7447d1661d938643b0004084367e7bdcb94fdcc4",
+          "version": "3.2.8"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

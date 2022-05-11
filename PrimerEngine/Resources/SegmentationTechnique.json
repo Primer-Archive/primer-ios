@@ -1,0 +1,75 @@
+{
+    "passes": {
+        "renderNonSwatchSceneContent": {
+            "draw": "DRAW_SCENE",
+            "outputs": {
+                "color": "nonSwatchSceneContentImage",
+                "depth": "nonSwatchSceneContentDepthMap"
+            },
+            "excludeCategoryMask": 2
+        },
+        "renderSwatch": {
+            "draw": "DRAW_SCENE",
+            "outputs": {
+                "color": "swatchImage",
+                "depth": "swatchDepthMap"
+            },
+            "includeCategoryMask": 2
+        },
+        "compose": {
+            "draw": "DRAW_QUAD",
+            "metalVertexShader": "vertex_pass_through",
+            "metalFragmentShader": "compose",
+            "inputs": {
+                "non_swatch_scene_content_image": "nonSwatchSceneContentImage",
+                "non_swatch_scene_content_depth_map": "nonSwatchSceneContentDepthMap",
+                "swatch_image": "swatchImage",
+                "swatch_shading_luminance": "swatchShadingLuminance",
+                "swatch_shading_chrominance": "swatchShadingChrominance",
+                "swatch_depth_map": "swatchDepthMap",
+                "matte": "matte",
+                "dilated_depth_map": "dilatedDepthMap",
+                "inverse_display_transform": "inverseDisplayTransform"
+            },
+            "outputs": {
+                "color": "COLOR"
+            }
+        }
+    },
+    "sequence": [
+        "renderNonSwatchSceneContent",
+        "renderSwatch",
+        "compose"
+    ],
+    "symbols": {
+        "swatchShadingLuminance": {
+            "type": "sampler2D"
+        },
+        "swatchShadingChrominance": {
+            "type": "sampler2D"
+        },
+        "matte": {
+            "type": "sampler2D"
+        },
+        "dilatedDepthMap": {
+            "type": "sampler2D"
+        },
+        "inverseDisplayTransform": {
+            "type": "mat4"
+        }
+    },
+    "targets": {
+        "nonSwatchSceneContentImage": {
+            "type": "color"
+        },
+        "nonSwatchSceneContentDepthMap": {
+            "type": "depth"
+        },
+        "swatchImage": {
+            "type": "color"
+        },
+        "swatchDepthMap": {
+            "type": "depth"
+        }
+    }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "Category",
+  "plural": "Categories",
+  "select_type": "multi",
+  "items": [
+      {
+          "id": 1,
+          "name": "Paint"
+          "slug": "slug-name"
+          "isSelected": false
+      },
+      {
+          "id": 2,
+          "name": "Wallpaper"
+          "slug": "slug-name"
+          "isSelected": false
+      },
+      {
+          "id": 3,
+          "name": "Tile"
+          "slug": "slug-name"
+          "isSelected": true
+      }
+  ]
+}

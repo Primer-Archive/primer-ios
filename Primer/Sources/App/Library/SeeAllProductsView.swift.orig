@@ -1,0 +1,62 @@
+import SwiftUI
+import PrimerEngine
+
+
+struct SeeAllCategoryProductsView: View {
+    @Binding var appState: AppState
+    
+    var client: APIClient
+    
+    var category: CategoryModel
+    
+    @Environment(\.analytics) var analytics
+    
+    var containerWidth: CGFloat
+    
+    @StateObject var categoryRepo = CategoryProductRepository()
+    
+    init(appState: Binding<AppState>, client: APIClient, category: CategoryModel, containerWidth: CGFloat) {
+        self._appState = appState
+        self.client = client
+        self.containerWidth = containerWidth
+        self.category = category
+<<<<<<< HEAD
+        self.collectionRepo = CategoryProductRepository(forCategory: category)
+    }
+    
+    var body: some View {
+        ProductGridView(productsRepo: collectionRepo, appState: $appState, showBrandName: true, containerWidth: containerWidth, onTap: { productId, variationIndex in
+            self.select(id: productId, variation: variationIndex)
+        }).onAppear {
+            // TODO: - Handle this metric, i think it's the wrong model type now
+//                self.analytics?.didViewAllForCollection(brand: self.brand, collection:self.productCollection)
+=======
+        self.onSelectProduct = onSelectProduct
+    }
+    
+    var body: some View {
+        ZStack {
+            BackgroundView().edgesIgnoringSafeArea(.all)
+            if self.categoryRepo.value.count == 0 {
+                ActivityIndicatorView()
+            }else{
+                ProductGridView(productsRepo: categoryRepo, appState: appState, showBrandName: true, containerWidth: containerWidth, onTap: { index, variationIndex in
+                    self.onSelectProduct(client.productsRepo.value, index, variationIndex)
+                })
+            }
+        }
+        .onAppear(){
+            categoryRepo.setCategoryId(categoryId: category.id)
+>>>>>>> 393029610ebeacd3ee6e094eb6c44f671f0a381a
+        }
+    }
+    
+    
+    func select(id: Int, variation: Int) {
+        appState.productCollection = collectionRepo
+        let productIndex = collectionRepo.value.firstIndex(where: { $0.id == id }) ?? 0
+        appState.selectedVariationIndex = Double(variation)
+        appState.currentIndex = Double(productIndex) + 1 // "View More" orb at the beginning requires offset of 1
+        appState.visibleSheet = nil
+    }
+}
